@@ -1,5 +1,5 @@
 /*!
- * pGenerator jQuery Plugin v1.0.5
+ * pGenerator jQuery Plugin v1.0.6
  * https://github.com/M1Sh0u/pGenerator
  *
  * Created by Mihai MATEI <mihai.matei@outlook.com>
@@ -12,6 +12,7 @@
         upper_letters_array = [],
         lower_letters_array = [],
         special_chars_array = [],
+        hex_array           = [],
         $pGeneratorElement  = null;
 
     /**
@@ -39,6 +40,7 @@
                 'uppercase': true,
                 'lowercase': true,
                 'numbers':   true,
+                'hex':       false,
                 'specialChars': true,
                 'additionalSpecialChars': [],
                 'onPasswordGenerated': function(generatedPassword) { }
@@ -55,7 +57,11 @@
             for(i = 97; i < 123; i++) {
                 lower_letters_array.push(i);
             }
-            
+
+            //addon hex
+            for (i = 65; i < 71; i++) hex_array.push(i); //hex letters
+            for (i = 48; i < 58; i++) hex_array.push(i); //numbers
+
             special_chars_array = [33, 35, 64, 36, 38, 42, 91, 93, 123, 125, 92, 47, 63, 58, 59, 95, 45].concat(settings.additionalSpecialChars);
 
             return this.each(function(){
@@ -78,7 +84,7 @@
         generatePassword: function(settings)
         {
             var password = new Array(),
-                selOptions = settings.uppercase + settings.lowercase + settings.numbers + settings.specialChars,
+                selOptions = settings.uppercase + settings.lowercase + settings.numbers + settings.specialChars + settings.hex,
                 selected = 0,
                 no_lower_letters = new Array();
 
@@ -91,6 +97,17 @@
                 }
 
                 no_lower_letters = no_lower_letters.concat(upper_letters_array);
+
+                selected++;
+            }
+
+            if (settings.hex) {
+                // numbers letters
+                for (var i = 0; i < optionLength; i++) {
+                    password.push(String.fromCharCode(hex_array[randomFromInterval(0, hex_array.length - 1)]));
+                }
+
+                no_lower_letters = no_lower_letters.concat(hex_array);
 
                 selected++;
             }
